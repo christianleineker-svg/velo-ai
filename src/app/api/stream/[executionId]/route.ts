@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { NextRequest } from 'next/server'
 import { subscribeToExecution } from '@/lib/squad-runner'
 import { SSEEvent } from '@/types'

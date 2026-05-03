@@ -1,7 +1,2 @@
-import { defineConfig } from 'prisma/config'
-
-export default defineConfig({
-  datasource: {
-    url: process.env.DATABASE_URL!,
-  },
-})
+// Não usado com Prisma 5 — configuração em prisma/schema.prisma
+export {}

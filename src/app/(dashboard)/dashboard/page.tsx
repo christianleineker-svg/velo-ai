@@ -31,7 +31,7 @@ export default async function DashboardPage() {
     return d.getDate() === now.getDate() && d.getMonth() === now.getMonth()
   })
 
-  const totalAgents = squads.reduce((sum, s) => sum + s.agents.length, 0)
+  const totalAgents = squads.reduce((sum: number, s) => sum + s.agents.length, 0)
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">

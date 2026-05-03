@@ -59,7 +59,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         category: category ?? existing.category,
         agents: agents
           ? {
-              create: agents.map((a) => ({
+              create: agents.map((a: { name: string; role: string; instructions: string; model?: string; order: number }) => ({
                 name: a.name,
                 role: a.role,
                 instructions: a.instructions,

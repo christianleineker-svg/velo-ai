@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
         category: template.category,
         userId: session.user.id,
         agents: {
-          create: template.agents.map((a) => ({
+          create: template.agents.map((a: { name: string; role: string; instructions: string; model: string; order: number }) => ({
             name: a.name,
             role: a.role,
             instructions: a.instructions,

@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
         category: category ?? 'custom',
         userId: session.user.id,
         agents: {
-          create: agents.map((a) => ({
+          create: agents.map((a: { name: string; role: string; instructions: string; model?: string; order: number }) => ({
             name: a.name,
             role: a.role,
             instructions: a.instructions,

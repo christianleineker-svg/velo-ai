@@ -28,7 +28,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
         category: original.category,
         userId: session.user.id,
         agents: {
-          create: original.agents.map((a) => ({
+          create: (original.agents as { name: string; role: string; instructions: string; model: string; order: number }[]).map((a) => ({
             name: a.name,
             role: a.role,
             instructions: a.instructions,

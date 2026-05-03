@@ -4,8 +4,7 @@ import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import Input from '@/components/ui/Input'
-import Button from '@/components/ui/Button'
+import { CipherAvatar, BoltAvatar, SageAvatar } from '@/lib/agent-avatars'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -18,15 +17,9 @@ export default function LoginPage() {
     e.preventDefault()
     setLoading(true)
     setError(null)
-
-    const res = await signIn('credentials', {
-      email,
-      password,
-      redirect: false,
-    })
-
+    const res = await signIn('credentials', { email, password, redirect: false })
     if (res?.error) {
-      setError('Email ou senha inválidos')
+      setError('EMAIL OU SENHA INVÁLIDOS')
       setLoading(false)
     } else {
       router.push('/dashboard')
@@ -34,50 +27,90 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-4">
-      <div className="w-full max-w-sm">
+    <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background characters */}
+      <div className="absolute inset-0 pointer-events-none select-none opacity-10">
+        <div className="absolute top-12 left-8"><CipherAvatar size={80} animated /></div>
+        <div className="absolute bottom-16 left-16"><BoltAvatar size={64} animated /></div>
+        <div className="absolute top-20 right-10"><SageAvatar size={72} animated /></div>
+        <div className="absolute bottom-8 right-20"><CipherAvatar size={56} animated /></div>
+      </div>
+
+      <div className="relative z-10 w-full max-w-sm">
+        {/* Logo */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 mb-6">
-            <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
-              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+          <Link href="/" className="inline-flex flex-col items-center gap-3 mb-6">
+            <div className="w-12 h-12 bg-purple-700 border-2 border-purple-500 flex items-center justify-center shadow-[0_0_16px_rgba(124,58,237,0.7)]">
+              <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
-            <span className="font-bold text-lg">Velo</span>
+            <span
+              className="font-['Press_Start_2P'] text-base text-white"
+              style={{ textShadow: '0 0 10px rgba(124,58,237,0.8), 2px 2px 0 #000' }}
+            >
+              VELO
+            </span>
           </Link>
-          <h1 className="text-2xl font-bold text-white">Entrar na sua conta</h1>
-          <p className="text-[#888888] text-sm mt-2">Bem-vindo de volta</p>
+          <div className="font-['Press_Start_2P'] text-[9px] text-[#00f5ff] tracking-widest">
+            PLAYER LOGIN
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            label="Email"
-            type="email"
-            placeholder="seu@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <Input
-            label="Senha"
-            type="password"
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+        {/* Form box */}
+        <div
+          className="border-2 border-[#1e1e3a] bg-[#0f0f1a] p-6"
+          style={{ boxShadow: '4px 4px 0 #000' }}
+        >
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block font-['Press_Start_2P'] text-[7px] text-[#8888aa] mb-2 tracking-widest">
+                EMAIL
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="seu@email.com"
+                required
+                className="w-full terminal-input px-3 py-2.5 text-sm font-mono rounded-none"
+              />
+            </div>
 
-          {error && <p className="text-sm text-red-400 text-center">{error}</p>}
+            <div>
+              <label className="block font-['Press_Start_2P'] text-[7px] text-[#8888aa] mb-2 tracking-widest">
+                SENHA
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                className="w-full terminal-input px-3 py-2.5 text-sm font-mono rounded-none"
+              />
+            </div>
 
-          <Button type="submit" loading={loading} className="w-full justify-center">
-            Entrar
-          </Button>
-        </form>
+            {error && (
+              <div className="border border-[#ff3366] bg-[#1a000a] px-3 py-2">
+                <p className="font-['Press_Start_2P'] text-[7px] text-[#ff3366] text-center">{error}</p>
+              </div>
+            )}
 
-        <p className="text-center text-sm text-[#888888] mt-6">
-          Não tem conta?{' '}
-          <Link href="/register" className="text-purple-400 hover:text-purple-300 transition-colors">
-            Criar conta grátis
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full font-['Press_Start_2P'] text-[8px] bg-purple-700 border-2 border-purple-500 text-white py-3 hover:bg-purple-600 hover:shadow-[0_0_12px_rgba(124,58,237,0.6)] transition-all shadow-[3px_3px_0_#000] disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? '► ENTRANDO...' : '► ENTRAR'}
+            </button>
+          </form>
+        </div>
+
+        <p className="text-center font-['Press_Start_2P'] text-[7px] text-[#44445a] mt-6">
+          SEM CONTA?{' '}
+          <Link href="/register" className="text-[#00f5ff] hover:underline">
+            CRIAR AGORA
           </Link>
         </p>
       </div>

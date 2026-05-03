@@ -7,11 +7,13 @@ import { Squad } from '@/types'
 
 export default async function SquadsPage() {
   const session = await getServerSession(authOptions)
-  const squads = await prisma.squad.findMany({
+  const squadsRaw = await prisma.squad.findMany({
     where: { userId: session!.user!.id as string },
     include: { agents: { orderBy: { order: 'asc' } } },
     orderBy: { updatedAt: 'desc' },
   })
+
+  const squads = squadsRaw as unknown as Squad[]
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
@@ -45,7 +47,7 @@ export default async function SquadsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {squads.map((squad) => (
-            <SquadCard key={squad.id} squad={squad as Squad} />
+            <SquadCard key={squad.id} squad={squad} />
           ))}
         </div>
       )}

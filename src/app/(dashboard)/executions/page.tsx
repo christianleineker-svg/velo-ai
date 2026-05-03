@@ -7,11 +7,13 @@ import { Execution } from '@/types'
 export default async function ExecutionsPage() {
   const session = await getServerSession(authOptions)
 
-  const executions = await prisma.execution.findMany({
+  const executionsRaw = await prisma.execution.findMany({
     where: { userId: session!.user!.id as string },
     include: { squad: { select: { id: true, name: true } } },
     orderBy: { createdAt: 'desc' },
   })
+
+  const executions = executionsRaw as unknown as (Execution & { squad: { id: string; name: string } })[]
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -29,10 +31,7 @@ export default async function ExecutionsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {executions.map((exec) => (
-            <ExecutionCard
-              key={exec.id}
-              execution={exec as Execution & { squad: { id: string; name: string } }}
-            />
+            <ExecutionCard key={exec.id} execution={exec} />
           ))}
         </div>
       )}

@@ -3,9 +3,10 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import SquadBuilder from '@/components/squad/SquadBuilder'
+import { Agent } from '@/types'
 
-export default async function EditSquadPage(props: PageProps<'/squads/[id]/edit'>) {
-  const { id } = await props.params
+export default async function EditSquadPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const session = await getServerSession(authOptions)
 
   const squad = await prisma.squad.findFirst({
@@ -14,6 +15,8 @@ export default async function EditSquadPage(props: PageProps<'/squads/[id]/edit'
   })
 
   if (!squad) notFound()
+
+  const agents = squad.agents as unknown as Agent[]
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
@@ -25,9 +28,9 @@ export default async function EditSquadPage(props: PageProps<'/squads/[id]/edit'
         initialData={{
           id: squad.id,
           name: squad.name,
-          description: squad.description,
+          description: squad.description ?? undefined,
           category: squad.category,
-          agents: squad.agents.map((a) => ({
+          agents: agents.map((a) => ({
             id: a.id,
             name: a.name,
             role: a.role,

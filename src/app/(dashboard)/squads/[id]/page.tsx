@@ -5,16 +5,16 @@ import { prisma } from '@/lib/prisma'
 import SquadRunner from './SquadRunner'
 import { Squad } from '@/types'
 
-export default async function SquadPage(props: PageProps<'/squads/[id]'>) {
-  const { id } = await props.params
+export default async function SquadPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const session = await getServerSession(authOptions)
 
-  const squad = await prisma.squad.findFirst({
+  const squadRaw = await prisma.squad.findFirst({
     where: { id, userId: session!.user!.id as string },
     include: { agents: { orderBy: { order: 'asc' } } },
   })
 
-  if (!squad) notFound()
+  if (!squadRaw) notFound()
 
-  return <SquadRunner squad={squad as Squad} />
+  return <SquadRunner squad={squadRaw as unknown as Squad} />
 }

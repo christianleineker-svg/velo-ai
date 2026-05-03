@@ -3,18 +3,20 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id           String      @id @default(cuid())
-  email        String      @unique
-  name         String?
-  password     String
-  plan         String      @default("free")
-  createdAt    DateTime    @default(now())
-  squads       Squad[]
-  executions   Execution[]
+  id         String      @id @default(cuid())
+  email      String      @unique
+  name       String?
+  password   String
+  avatar     String?
+  plan       String      @default("free")
+  createdAt  DateTime    @default(now())
+  squads     Squad[]
+  executions Execution[]
 }
 
 model Squad {
@@ -32,27 +34,28 @@ model Squad {
 }
 
 model Agent {
-  id           String  @id @default(cuid())
+  id           String @id @default(cuid())
   name         String
   role         String
   instructions String
-  model        String  @default("claude")
+  model        String @default("claude")
+  avatar       String @default("cipher")
   order        Int
   squadId      String
-  squad        Squad   @relation(fields: [squadId], references: [id], onDelete: Cascade)
+  squad        Squad  @relation(fields: [squadId], references: [id], onDelete: Cascade)
 }
 
 model Execution {
-  id          String   @id @default(cuid())
-  squadId     String
-  squad       Squad    @relation(fields: [squadId], references: [id])
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  status      String   @default("pending")
-  input       String
-  output      String?
-  logs        String   @default("[]")
-  tokensUsed  Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(cuid())
+  squadId    String
+  squad      Squad    @relation(fields: [squadId], references: [id])
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  status     String   @default("pending")
+  input      String
+  output     String?
+  logs       String   @default("[]")
+  tokensUsed Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }

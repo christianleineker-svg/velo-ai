@@ -1,8 +1,8 @@
 import Anthropic from '@anthropic-ai/sdk'
 
-export const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-})
+function getAnthropic() {
+  return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+}
 
 export async function runAgentWithClaude(
   agentName: string,
@@ -11,7 +11,7 @@ export async function runAgentWithClaude(
   input: string,
   previousOutputs: string
 ): Promise<string> {
-  const message = await anthropic.messages.create({
+  const message = await getAnthropic().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 2048,
     messages: [

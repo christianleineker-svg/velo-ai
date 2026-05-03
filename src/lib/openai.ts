@@ -1,14 +1,14 @@
 import OpenAI from 'openai'
 
-export const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
+function getOpenAI() {
+  return new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+}
 
 export async function suggestAgentsForSquad(
   squadName: string,
   description: string
 ): Promise<Array<{ name: string; role: string; instructions: string }>> {
-  const completion = await openai.chat.completions.create({
+  const completion = await getOpenAI().chat.completions.create({
     model: 'gpt-4o',
     messages: [
       {

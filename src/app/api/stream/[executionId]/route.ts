@@ -2,8 +2,8 @@ import { NextRequest } from 'next/server'
 import { subscribeToExecution } from '@/lib/squad-runner'
 import { SSEEvent } from '@/types'
 
-export async function GET(_req: NextRequest, ctx: RouteContext<'/api/stream/[executionId]'>) {
-  const { executionId } = await ctx.params
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ executionId: string }> }) {
+  const { executionId } = await params
 
   const stream = new ReadableStream({
     start(controller) {
@@ -30,7 +30,6 @@ export async function GET(_req: NextRequest, ctx: RouteContext<'/api/stream/[exe
         }
       })
 
-      // Auto-close after 5 minutes if no done event received
       const timeout = setTimeout(() => {
         unsubscribe()
         try {

@@ -4,14 +4,14 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { runSquad } from '@/lib/squad-runner'
 
-export async function POST(request: NextRequest, ctx: RouteContext<'/api/squads/[id]/run'>) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
-    const { id } = await ctx.params
+    const { id } = await params
 
     const squad = await prisma.squad.findFirst({
       where: { id, userId: session.user.id },

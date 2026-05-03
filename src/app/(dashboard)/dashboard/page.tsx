@@ -10,7 +10,7 @@ export default async function DashboardPage() {
   const session = await getServerSession(authOptions)
   const userId = session!.user!.id as string
 
-  const [squads, executions] = await Promise.all([
+  const [squadsRaw, executionsRaw] = await Promise.all([
     prisma.squad.findMany({
       where: { userId },
       include: { agents: { orderBy: { order: 'asc' } } },
@@ -25,13 +25,16 @@ export default async function DashboardPage() {
     }),
   ])
 
-  const todayExecs = executions.filter((e: { createdAt: Date }) => {
+  const squads = squadsRaw as unknown as Squad[]
+  const executions = executionsRaw as unknown as (Execution & { squad: { id: string; name: string } })[]
+
+  const now = new Date()
+  const todayExecs = executions.filter((e) => {
     const d = new Date(e.createdAt)
-    const now = new Date()
     return d.getDate() === now.getDate() && d.getMonth() === now.getMonth()
   })
 
-  const totalAgents = squads.reduce((sum: number, s) => sum + s.agents.length, 0)
+  const totalAgents = squads.reduce((sum, s) => sum + (s.agents?.length ?? 0), 0)
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">
@@ -78,7 +81,7 @@ export default async function DashboardPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {squads.map((squad) => (
-              <SquadCard key={squad.id} squad={squad as Squad} />
+              <SquadCard key={squad.id} squad={squad} />
             ))}
           </div>
         )}
@@ -95,7 +98,7 @@ export default async function DashboardPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {executions.slice(0, 4).map((exec) => (
-              <ExecutionCard key={exec.id} execution={exec as Execution & { squad: { id: string; name: string } }} />
+              <ExecutionCard key={exec.id} execution={exec} />
             ))}
           </div>
         </div>

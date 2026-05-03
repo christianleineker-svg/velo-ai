@@ -7,7 +7,9 @@ declare global {
 
 function getClient(): PrismaClient {
   if (!global.prisma) {
-    global.prisma = new PrismaClient()
+    const url = process.env.DATABASE_URL
+    if (!url) throw new Error('DATABASE_URL não está definida')
+    global.prisma = new PrismaClient({ datasourceUrl: url })
   }
   return global.prisma
 }

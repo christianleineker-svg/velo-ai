@@ -32,6 +32,7 @@ interface CS {
   shadow: number
   antGlow: boolean
   bugX: number; bugY: number; bugVis: boolean; bugDir: 1 | -1
+  chaseDir: 1 | -1
   laptop: boolean
   thought: '' | '...' | '💡'
   fw: boolean
@@ -40,7 +41,7 @@ interface CS {
 const rnd = (a: number, b: number) => Math.random() * (b - a) + a
 const newPos = (): [number, number] => [rnd(50, SW - 50), rnd(60, SH - 70)]
 
-const RESET: Omit<CS, 'x' | 'y' | 'tx' | 'ty' | 'facing' | 'anim' | 'at' | 'antGlow' | 'bugX' | 'bugY' | 'bugVis' | 'bugDir'> = {
+const RESET: Omit<CS, 'x' | 'y' | 'tx' | 'ty' | 'facing' | 'anim' | 'at' | 'antGlow' | 'bugX' | 'bugY' | 'bugVis' | 'bugDir' | 'chaseDir'> = {
   sqX: 1, sqY: 1, lean: 0, bY: 0,
   lR: 0, lL: 0, aR: 0, aL: 0,
   eX: 0, eY: 0, eS: 1,
@@ -51,7 +52,7 @@ const RESET: Omit<CS, 'x' | 'y' | 'tx' | 'ty' | 'facing' | 'anim' | 'at' | 'antG
 const mkInit = (): CS => {
   const [x, y] = newPos()
   const [tx, ty] = newPos()
-  return { x, y, tx, ty, facing: 1, anim: 'walk', at: 0, ...RESET, antGlow: false, bugX: SW + 60, bugY: SH / 2, bugVis: false, bugDir: -1 }
+  return { x, y, tx, ty, facing: 1, anim: 'walk', at: 0, ...RESET, antGlow: false, bugX: SW + 60, bugY: SH / 2, bugVis: false, bugDir: -1, chaseDir: 1 }
 }
 
 export default function LoginBackground() {
@@ -98,11 +99,16 @@ export default function LoginBackground() {
             else if (pick < 0.79) go('idle-scratch', { x: c.x, y: c.y })
             else if (pick < 0.87) go('idle-jump',    { x: c.x, y: c.y })
             else if (pick < 0.94) go('coding',       { x: c.x, y: c.y })
-            else                  go('bug-chase',    {
-              x: c.x, y: c.y, bugVis: true,
-              bugX: c.x + (Math.random() > 0.5 ? 90 : -90),
-              bugY: c.y,
-            })
+            else {
+              const dir: 1 | -1 = Math.random() > 0.5 ? 1 : -1
+              go('bug-chase', {
+                x: c.x, y: c.y, bugVis: true,
+                bugX: c.x - dir * 80,  // bug appears behind
+                bugY: c.y,
+                chaseDir: dir,
+                facing: dir,
+              })
+            }
             break
           }
 
@@ -194,43 +200,45 @@ export default function LoginBackground() {
         }
 
         case 'bug-chase': {
-          if (at < 5200) {
-            const ph = (t * 0.014) % (Math.PI * 2)
-            const dx = c.tx - c.x
-            const dy = c.ty - c.y
-            const dist = Math.hypot(dx, dy)
-            let nx = c.x, ny = c.y, ntx = c.tx, nty = c.ty
+          const PANIC   = 400   // pausa antes de sair correndo
+          const FLEE    = 7000  // tempo total correndo (~1.5 voltas na tela)
+          const RETREAT = 8400  // bug recua, personagem para
 
-            if (dist > 14) {
-              const sp = 118
-              nx = c.x + (dx / dist) * sp * dt / 1000
-              ny = c.y + (dy / dist) * sp * dt / 1000
-            } else {
-              // reached flee point — pick another
-              ;[ntx, nty] = newPos()
-            }
-
-            const facing: 1 | -1 = dx === 0 ? c.facing : (dx > 0 ? 1 : -1)
-            const bdx = nx - c.bugX
-            const bdy = ny - c.bugY
-            const bdist = Math.hypot(bdx, bdy) || 1
-
+          if (at < PANIC) {
+            // expressão de pânico ao ver o bug
             apply({
-              at, x: nx, y: ny, tx: ntx, ty: nty, facing,
-              lean: facing * -14,
-              lR: Math.sin(ph) * 36, lL: Math.sin(ph + Math.PI) * 36,
-              aR: Math.sin(ph + Math.PI) * 18 - 10, aL: Math.sin(ph) * 18 - 10,
-              eX: -facing * 3, mouth: 'worry', eS: 1.2, antGlow: ant,
-              bugX: c.bugX + (bdx / bdist) * 44 * dt / 1000,
-              bugY: c.bugY + (bdy / bdist) * 44 * dt / 1000,
-              bugDir: bdx > 0 ? 1 : -1,
+              at, mouth: 'big-o', eS: 1.5, eY: -2,
+              eX: -c.chaseDir * 3, bugVis: true,
             })
-          } else if (at < 6200) {
-            // bug retreats
+          } else if (at < FLEE) {
+            // corre na direção fixa, wrapping nas bordas
+            const ph = (t * 0.014) % (Math.PI * 2)
+            let nx  = c.x   + c.chaseDir * 138 * dt / 1000
+            let nbx = c.bugX + c.chaseDir *  80 * dt / 1000
+
+            // wrap personagem
+            if (nx  >  SW + 70) nx  = -70
+            if (nx  < -70)      nx  = SW + 70
+            // wrap bug
+            if (nbx >  SW + 70) nbx = -70
+            if (nbx < -70)      nbx = SW + 70
+
             apply({
-              at, lean: 0, eX: 0, mouth: 'smile',
-              bugX: c.bugX + c.bugDir * 2.5,
-              bugVis: c.bugX > -50 && c.bugX < SW + 50,
+              at, x: nx, facing: c.chaseDir,
+              lean: c.chaseDir * -16,
+              lR: Math.sin(ph) * 40, lL: Math.sin(ph + Math.PI) * 40,
+              aR: Math.sin(ph + Math.PI) * 22 - 12,
+              aL: Math.sin(ph) * 22 - 12,
+              eX: -c.chaseDir * 4, mouth: 'worry', eS: 1.25, antGlow: ant,
+              bugX: nbx, bugDir: c.chaseDir,
+            })
+          } else if (at < RETREAT) {
+            // bug desiste e vai embora na direção oposta
+            apply({
+              at, lean: 0, eX: 0, mouth: 'smile', eS: 1,
+              bugX: c.bugX - c.chaseDir * 3,
+              bugDir: (-c.chaseDir) as 1 | -1,
+              bugVis: c.bugX > -70 && c.bugX < SW + 70,
             })
           } else {
             go('eureka', { x: c.x, y: c.y, bugVis: false })

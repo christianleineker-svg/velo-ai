@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { CipherAvatar, BoltAvatar, SageAvatar } from '@/lib/agent-avatars'
+import LoginBackground from '@/components/LoginBackground'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -28,13 +28,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background characters */}
-      <div className="absolute inset-0 pointer-events-none select-none opacity-10">
-        <div className="absolute top-12 left-8"><CipherAvatar size={80} animated /></div>
-        <div className="absolute bottom-16 left-16"><BoltAvatar size={64} animated /></div>
-        <div className="absolute top-20 right-10"><SageAvatar size={72} animated /></div>
-        <div className="absolute bottom-8 right-20"><CipherAvatar size={56} animated /></div>
-      </div>
+      <LoginBackground />
 
       <div className="relative z-10 w-full max-w-sm">
         {/* Logo */}

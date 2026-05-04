@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
-import { NovaAvatar, LunaAvatar, EchoAvatar } from '@/lib/agent-avatars'
+import LoginBackground from '@/components/LoginBackground'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -41,13 +41,7 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background characters */}
-      <div className="absolute inset-0 pointer-events-none select-none opacity-10">
-        <div className="absolute top-8 right-8"><NovaAvatar size={80} animated /></div>
-        <div className="absolute bottom-12 left-10"><LunaAvatar size={64} animated /></div>
-        <div className="absolute top-24 left-16"><EchoAvatar size={56} animated /></div>
-        <div className="absolute bottom-6 right-24"><NovaAvatar size={48} animated /></div>
-      </div>
+      <LoginBackground />
 
       <div className="relative z-10 w-full max-w-sm">
         {/* Logo */}

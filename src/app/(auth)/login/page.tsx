@@ -28,12 +28,50 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background characters */}
-      <div className="absolute inset-0 pointer-events-none select-none opacity-10">
-        <div className="absolute top-12 left-8"><CipherAvatar size={80} animated /></div>
-        <div className="absolute bottom-16 left-16"><BoltAvatar size={64} animated /></div>
-        <div className="absolute top-20 right-10"><SageAvatar size={72} animated /></div>
-        <div className="absolute bottom-8 right-20"><CipherAvatar size={56} animated /></div>
+      {/* Animated background scene */}
+      <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
+        {/* Depth grid lines */}
+        <div className="absolute bottom-[16%] left-0 right-0 h-px bg-[#1e1e3a] opacity-25" />
+        <div className="absolute bottom-[32%] left-0 right-0 h-px bg-[#1e1e3a] opacity-15" />
+        <div className="absolute bottom-[52%] left-0 right-0 h-px bg-[#1e1e3a] opacity-10" />
+
+        {/* Coder (BoltAvatar) — L→R, pauses to type */}
+        <div
+          className="absolute left-0 bottom-[18%]"
+          style={{ animation: 'scene-walk-lr 22s linear infinite', opacity: 0.48 }}
+        >
+          <div style={{ animation: 'idle-bounce 0.85s ease-in-out infinite' }}>
+            <BoltAvatar size={76} />
+          </div>
+        </div>
+
+        {/* Analyst (SageAvatar) — R→L, pauses to write */}
+        <div
+          className="absolute left-0 bottom-[53%]"
+          style={{ animation: 'scene-walk-rl 28s linear infinite', animationDelay: '-11s', opacity: 0.32 }}
+        >
+          <div style={{ transform: 'scaleX(-1)', animation: 'idle-bounce 1s ease-in-out infinite' }}>
+            <SageAvatar size={58} />
+          </div>
+        </div>
+
+        {/* Debugger (CipherAvatar) — runs R→L, frantic */}
+        <div
+          className="absolute left-0 bottom-[34%]"
+          style={{ animation: 'scene-run-rl 11s linear infinite', animationDelay: '-4s', opacity: 0.52 }}
+        >
+          <div style={{ transform: 'scaleX(-1)', animation: 'run-bob 0.24s ease-in-out infinite' }}>
+            <CipherAvatar size={68} />
+          </div>
+        </div>
+
+        {/* Bug chasing debugger */}
+        <div
+          className="absolute left-0 text-2xl"
+          style={{ bottom: 'calc(34% + 20px)', animation: 'scene-bug-chase 11s linear infinite', animationDelay: '-3.4s', opacity: 0.65 }}
+        >
+          🐛
+        </div>
       </div>
 
       <div className="relative z-10 w-full max-w-sm">

@@ -190,6 +190,37 @@ body::before {
 }
 .animate-slide-up { animation: slide-up 0.3s ease-out forwards; }
 
+/* ─── Login background scene ─── */
+/* Coder: walks L→R, pauses at ~28vw to "type" */
+@keyframes scene-walk-lr {
+  0%   { transform: translateX(-90px); }
+  28%  { transform: translateX(28vw); }
+  65%  { transform: translateX(28vw); }
+  100% { transform: translateX(110vw); }
+}
+/* Analyst: walks R→L, pauses at ~58vw to "write" */
+@keyframes scene-walk-rl {
+  0%   { transform: translateX(110vw); }
+  35%  { transform: translateX(58vw); }
+  72%  { transform: translateX(58vw); }
+  100% { transform: translateX(-90px); }
+}
+/* Debugger: runs R→L (faster, no pause) */
+@keyframes scene-run-rl {
+  0%   { transform: translateX(110vw); }
+  100% { transform: translateX(-130px); }
+}
+/* Bug chasing debugger */
+@keyframes scene-bug-chase {
+  0%   { transform: translateX(118vw); }
+  100% { transform: translateX(-80px); }
+}
+/* Fast run bob for debugger */
+@keyframes run-bob {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-5px); }
+}
+
 /* ═══════════════════════════════════════════
    PIXEL PROGRESS BAR
 ═══════════════════════════════════════════ */

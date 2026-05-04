@@ -396,14 +396,14 @@ export default function LoginBackground() {
 
           {/* Mouth */}
           {c.mouth === 'smile' && (
-            <path d={`M${c.x - 4.5} ${headY + 5.5}Q${c.x} ${headY + 9}${c.x + 4.5} ${headY + 5.5}`}
+            <path d={`M${c.x - 4.5},${headY + 5.5} Q${c.x},${headY + 9} ${c.x + 4.5},${headY + 5.5}`}
               fill="none" stroke="#581c87" strokeWidth="1.5" strokeLinecap="round" />
           )}
           {c.mouth === 'big-o' && (
             <ellipse cx={c.x} cy={headY + 6.5} rx="4" ry="5" fill="#581c87" />
           )}
           {c.mouth === 'worry' && (
-            <path d={`M${c.x - 4.5} ${headY + 8}Q${c.x} ${headY + 4.5}${c.x + 4.5} ${headY + 8}`}
+            <path d={`M${c.x - 4.5},${headY + 8} Q${c.x},${headY + 4.5} ${c.x + 4.5},${headY + 8}`}
               fill="none" stroke="#581c87" strokeWidth="1.5" strokeLinecap="round" />
           )}
           {c.mouth === 'think' && (

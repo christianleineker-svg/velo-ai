@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import RobotCharacter from '@/components/login/RobotCharacter'
+import AstroRobot from '@/components/login/AstroRobot'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -12,8 +12,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  const modalRef = useRef<HTMLDivElement>(null)
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
@@ -30,7 +28,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4 relative overflow-hidden">
       {/* Animated robot character */}
-      <RobotCharacter modalRef={modalRef} />
+      <AstroRobot />
 
       <div className="relative z-10 w-full max-w-sm">
         {/* Logo */}
@@ -55,7 +53,6 @@ export default function LoginPage() {
 
         {/* Form box */}
         <div
-          ref={modalRef}
           className="border-2 border-[#1e1e3a] bg-[#0f0f1a] p-6"
           style={{ boxShadow: '4px 4px 0 #000' }}
         >

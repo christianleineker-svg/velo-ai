@@ -12,7 +12,7 @@ export async function runAgentWithClaude(
   previousOutputs: string
 ): Promise<string> {
   const message = await getAnthropic().messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-5',
     max_tokens: 2048,
     messages: [
       {

@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { CipherAvatar, BoltAvatar, SageAvatar } from '@/lib/agent-avatars'
+import RobotCharacter from '@/components/login/RobotCharacter'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -12,6 +12,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const modalRef = useRef<HTMLDivElement>(null)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -28,13 +29,8 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background characters */}
-      <div className="absolute inset-0 pointer-events-none select-none opacity-10">
-        <div className="absolute top-12 left-8"><CipherAvatar size={80} animated /></div>
-        <div className="absolute bottom-16 left-16"><BoltAvatar size={64} animated /></div>
-        <div className="absolute top-20 right-10"><SageAvatar size={72} animated /></div>
-        <div className="absolute bottom-8 right-20"><CipherAvatar size={56} animated /></div>
-      </div>
+      {/* Animated robot character */}
+      <RobotCharacter modalRef={modalRef} />
 
       <div className="relative z-10 w-full max-w-sm">
         {/* Logo */}
@@ -59,6 +55,7 @@ export default function LoginPage() {
 
         {/* Form box */}
         <div
+          ref={modalRef}
           className="border-2 border-[#1e1e3a] bg-[#0f0f1a] p-6"
           style={{ boxShadow: '4px 4px 0 #000' }}
         >

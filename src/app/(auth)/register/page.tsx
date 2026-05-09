@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
-import { NovaAvatar, LunaAvatar, EchoAvatar } from '@/lib/agent-avatars'
+import RobotCharacter from '@/components/login/RobotCharacter'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -14,6 +14,7 @@ export default function RegisterPage() {
   const [confirm, setConfirm] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const modalRef = useRef<HTMLDivElement>(null)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -41,13 +42,8 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background characters */}
-      <div className="absolute inset-0 pointer-events-none select-none opacity-10">
-        <div className="absolute top-8 right-8"><NovaAvatar size={80} animated /></div>
-        <div className="absolute bottom-12 left-10"><LunaAvatar size={64} animated /></div>
-        <div className="absolute top-24 left-16"><EchoAvatar size={56} animated /></div>
-        <div className="absolute bottom-6 right-24"><NovaAvatar size={48} animated /></div>
-      </div>
+      {/* Animated robot character */}
+      <RobotCharacter modalRef={modalRef} />
 
       <div className="relative z-10 w-full max-w-sm">
         {/* Logo */}
@@ -72,6 +68,7 @@ export default function RegisterPage() {
 
         {/* Form box */}
         <div
+          ref={modalRef}
           className="border-2 border-[#1e1e3a] bg-[#0f0f1a] p-6"
           style={{ boxShadow: '4px 4px 0 #000' }}
         >
